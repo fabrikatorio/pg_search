@@ -80,7 +80,8 @@ module PgSearch
 
     def subquery
       model
-        .unscoped
+        # https://github.com/Casecommons/pg_search/issues/292#issuecomment-518258479
+        # .unscoped
         .select("#{primary_key} AS pg_search_id")
         .select("#{rank} AS rank")
         .joins(subquery_join)

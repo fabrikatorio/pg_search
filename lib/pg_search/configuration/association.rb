@@ -50,7 +50,8 @@ module PgSearch
       end
 
       def relation(primary_key)
-        result = @model.unscoped.joins(@name).select("#{primary_key} AS id, #{selects}")
+        # @model.unscoped removed https://github.com/Casecommons/pg_search/issues/292#issuecomment-518258479
+        result = @model.joins(@name).select("#{primary_key} AS id, #{selects}")
         result = result.group(primary_key) unless singular_association?
         result
       end

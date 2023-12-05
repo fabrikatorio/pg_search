@@ -133,11 +133,20 @@ describe "a pg_search_scope" do
         ]
 
         results = ModelWithHasMany
+          .with_associated("foo bar")
+          .limit(1)
+          .order(Arel.sql("#{ModelWithHasMany.quoted_table_name}.id ASC"))
+
+        expect(results.map(&:title)).to match_array(included.map(&:title))
+        expect(results).not_to include(excluded)
+
+        # the order of the scope is important since it'll be pushed all the way to subquery
+        results = ModelWithHasMany
           .limit(1)
           .order(Arel.sql("#{ModelWithHasMany.quoted_table_name}.id ASC"))
           .with_associated("foo bar")
 
-        expect(results.map(&:title)).to match_array(included.map(&:title))
+        expect(results.map(&:title)).to eq([])
         expect(results).not_to include(excluded)
       end
     end
